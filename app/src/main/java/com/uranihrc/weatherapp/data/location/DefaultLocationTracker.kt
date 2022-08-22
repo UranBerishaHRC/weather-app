@@ -38,25 +38,20 @@ class DefaultLocationTracker @Inject constructor(
         }
 
         return suspendCancellableCoroutine { cont ->
-
             locationClient.lastLocation.apply {
-                //todo check why is not working location service
-                val loc = Location("dummyprovider")
-                loc.latitude = 61.7420918
-                loc.longitude = 8.4412106
                 if(isComplete) {
                     if(isSuccessful) {
-                        cont.resume(loc)
+                        cont.resume(result)
                     } else {
-                        cont.resume(loc)
+                        cont.resume(null)
                     }
                     return@suspendCancellableCoroutine
                 }
                 addOnSuccessListener {
-                    cont.resume(loc)
+                    cont.resume(it)
                 }
                 addOnFailureListener {
-                    cont.resume(loc)
+                    cont.resume(null)
                 }
                 addOnCanceledListener {
                     cont.cancel()
