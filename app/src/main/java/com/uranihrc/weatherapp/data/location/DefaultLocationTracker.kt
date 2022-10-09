@@ -37,13 +37,18 @@ class DefaultLocationTracker @Inject constructor(
             return null
         }
 
+        //todo only for sample test
+        val loc = Location("test")
+        loc.latitude = 59.33
+        loc.longitude = 18.06
+
         return suspendCancellableCoroutine { cont ->
             locationClient.lastLocation.apply {
                 if(isComplete) {
                     if(isSuccessful) {
                         cont.resume(result)
                     } else {
-                        cont.resume(null)
+                        cont.resume(loc)
                     }
                     return@suspendCancellableCoroutine
                 }
@@ -51,7 +56,7 @@ class DefaultLocationTracker @Inject constructor(
                     cont.resume(it)
                 }
                 addOnFailureListener {
-                    cont.resume(null)
+                    cont.resume(loc)
                 }
                 addOnCanceledListener {
                     cont.cancel()
